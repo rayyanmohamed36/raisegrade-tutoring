@@ -258,6 +258,10 @@ nav a:hover {
   color: var(--muted);
 }
 
+/* Make anchor-wrapped feature cards behave visually like cards */
+.feature-link { text-decoration: none; color: inherit; display: block; }
+.feature-link:focus { outline: 3px solid rgba(99,179,237,0.25); border-radius: 12px; }
+
 /*
   Authentication Pages (Login/Signup) & Index Auth Section
 */
