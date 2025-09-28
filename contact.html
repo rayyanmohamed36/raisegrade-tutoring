@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Contact — Raisegrade Tutoring</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="site-header" data-include="partials/header.html"></div>
+
+  <main>
+    <section class="hero">
+      <h2>Contact Us</h2>
+      <p>Use the form below to send us a message and we'll get back to you within 48 hours.</p>
+    </section>
+
+    <section class="auth-container">
+      <div class="auth-card">
+        <h2>Send a Message</h2>
+        <input id="name" type="text" placeholder="Your name" />
+        <input id="email" type="email" placeholder="Your email" />
+        <input id="subject" type="text" placeholder="Subject" />
+        <textarea id="message" rows="5" placeholder="Your message"></textarea>
+        <button id="sendBtn">Send Message</button>
+        <div id="status" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2025 Raisegrade</footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Simple client-side form handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const send = document.getElementById('sendBtn');
+      const status = document.getElementById('status');
+      send.addEventListener('click', () => {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        if (!name || !email || !message) {
+          status.textContent = 'Please fill in name, email and message.';
+          return;
+        }
+        // Simulate success
+        status.textContent = 'Thanks — your message has been sent (demo).';
+        // Clear form
+        document.getElementById('name').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('subject').value = '';
+        document.getElementById('message').value = '';
+      });
+    });
+  </script>
+</body>
+</html>
