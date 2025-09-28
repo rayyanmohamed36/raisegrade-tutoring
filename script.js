@@ -15,15 +15,15 @@ async function loadIncludes() {
 }
 
 function applyThemeFromStorage() {
-  // Dark is default. 'light' stored value will remove the dark class.
+  // Dark is default. We use `body.light` to opt into light theme.
   const stored = localStorage.getItem('site-theme');
   if (stored === 'light') {
-    document.body.classList.remove('dark');
+    document.body.classList.add('light');
   } else if (stored === 'dark') {
-    document.body.classList.add('dark');
+    document.body.classList.remove('light');
   } else {
-    // No preference stored: default to dark
-    document.body.classList.add('dark');
+    // No preference stored: default to dark (no .light class)
+    document.body.classList.remove('light');
   }
 }
 
@@ -32,14 +32,15 @@ function wireThemeToggle() {
   if (!btn) return;
 
   function updateButton() {
-    const isDark = document.body.classList.contains('dark');
-    btn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-    btn.setAttribute('aria-pressed', String(isDark));
+    const isLight = document.body.classList.contains('light');
+    // show the action the button will perform when clicked
+    btn.textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+    btn.setAttribute('aria-pressed', String(isLight));
   }
 
   btn.addEventListener('click', () => {
-    const isDark = document.body.classList.toggle('dark');
-    localStorage.setItem('site-theme', isDark ? 'dark' : 'light');
+    const isNowLight = document.body.classList.toggle('light');
+    localStorage.setItem('site-theme', isNowLight ? 'light' : 'dark');
     updateButton();
   });
 

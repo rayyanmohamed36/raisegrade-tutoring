@@ -18,12 +18,22 @@
     <section class="auth-container">
       <div class="auth-card">
         <h2>Send a Message</h2>
-        <input id="name" type="text" placeholder="Your name" />
-        <input id="email" type="email" placeholder="Your email" />
-        <input id="subject" type="text" placeholder="Subject" />
-        <textarea id="message" rows="5" placeholder="Your message"></textarea>
-        <button id="sendBtn">Send Message</button>
-        <div id="status" role="status" aria-live="polite"></div>
+        <form id="contactForm" class="contact-form" novalidate>
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="your@email.com" required />
+
+          <label for="subject">Subject</label>
+          <input id="subject" name="subject" type="text" placeholder="Subject (optional)" />
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="6" placeholder="Your message" required></textarea>
+
+          <button id="sendBtn" type="submit">Send Message</button>
+          <div id="status" role="status" aria-live="polite"></div>
+        </form>
       </div>
     </section>
   </main>
@@ -32,27 +42,54 @@
 
   <script src="script.js"></script>
   <script>
-    // Simple client-side form handler
+    // Submit the contact form to Formspree using fetch so the form stays on page
     document.addEventListener('DOMContentLoaded', () => {
-      const send = document.getElementById('sendBtn');
+      const form = document.getElementById('contactForm');
       const status = document.getElementById('status');
-      send.addEventListener('click', () => {
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const message = document.getElementById('message').value.trim();
-        if (!name || !email || !message) {
+      const endpoint = 'https://formspree.io/f/mnngjyww'; // your Formspree endpoint
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        status.textContent = '';
+
+        const formData = new FormData(form);
+        // basic client validation
+        if (!formData.get('name') || !formData.get('email') || !formData.get('message')) {
           status.textContent = 'Please fill in name, email and message.';
           return;
         }
-        // Simulate success
-        status.textContent = 'Thanks — your message has been sent (demo).';
-        // Clear form
-        document.getElementById('name').value = '';
-        document.getElementById('email').value = '';
-        document.getElementById('subject').value = '';
-        document.getElementById('message').value = '';
+
+        try {
+          status.textContent = 'Sending...';
+          
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: formData
+          });
+
+          if (res.ok) {
+            status.textContent = 'Thanks — your message has been sent.';
+            status.style.color = 'var(--accent)';
+            form.reset();
+          } else {
+            const data = await res.json();
+            console.error('Formspree error:', data);
+            if (data && data.errors) {
+              status.textContent = data.errors.map(err => err.message).join(', ');
+            } else {
+              status.textContent = 'Sorry — there was a problem sending your message.';
+            }
+            status.style.color = '#ff6b6b';
+          }
+        } catch (err) {
+          console.error('Network error:', err);
+          status.textContent = 'Network error — please try again later.';
+          status.style.color = '#ff6b6b';
+        }
       });
     });
   </script>
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
